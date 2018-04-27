@@ -1,0 +1,138 @@
+/*
+    FibreFoX/javafx-gradle-plugin
+    https://github.com/FibreFoX/javafx-gradle-plugin.git
+    License: Apache 2.0
+*/
+
+/*
+compileJava {
+    targetCompatibility = JavaVersion.VERSION_1_9
+}
+*/
+
+/* Gradle Task List */
+// gradle build - Build JavaFX Application
+// gradle jfxJar - Create executable JavaFX-jar
+// gradle jfxNative - Create native JavaFX-bundle (will run jfxJar first)
+// gradle jfxRun - Create the JavaFX-jar and runs it like you would do using java -jar my-project-jfx.jar, adjustable using runJavaParameter/runAppParameter-parameter
+// gradle jfxGenerateKeyStore - Create a Java keystore
+// gradle jfxListBundlers - List all possible bundlers available on this system, use '--info' parameter for detailed information
+// gradle jfxRunClass - 'Launches the JavaFX Application from the main class file'
+
+buildscript {
+    dependencies {
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+    }
+    
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'java'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+
+apply plugin: 'javafx-gradle-plugin'
+
+// configure javafx-gradle-plugin
+// for all available settings please look at the class "JavaFXGradlePluginExtension"
+jfx {
+    verbose = true
+    mainClass = "src.main.java.JavaFX9Demo"
+    jfxAppOutputDir = "build/jfx/app"
+    jfxMainAppJarName = "JavaFX9Demo.jar"
+    deployDir = "src/main/deploy"
+    useEnvironmentRelativeExecutables = true
+    libFolderName = "lib"
+    
+    // gradle jfxJar
+    css2bin = false
+    preLoader = null // String
+    updateExistingJar = true
+    allPermissions = false
+    manifestAttributes = null // Map<String, String>
+    addPackagerJar = true
+    copyAdditionalAppResourcesToJar = false
+    skipCopyingDependencies = false
+    useLibFolderContentForManifestClasspath = false
+    fixedManifestClasspath = null
+
+    // gradle jfxNative
+    identifier = null  // String - setting this for windows-bundlers makes it possible to generate upgradeable installers (using same GUID)
+    vendor = "www.adriandavid.me"
+    nativeOutputDir = "build/jfx/native"
+    bundler = "ALL" // set this to some specific, if your don't want all bundlers running, examples "windows.app", "jnlp", ...
+    jvmProperties = null // Map<String, String>
+    jvmArgs = null // List<String>
+    userJvmArgs = null // Map<String, String>
+    launcherArguments = null // List<String>
+    nativeReleaseVersion = "1.0.0"
+    needShortcut = true
+    needMenu = true
+    bundleArguments = [
+        // dont bundle JRE (not recommended, but increases build-size/-speed)
+        runtime: null
+    ]
+    appName = "JavaFX9Demo" // this is used for files below "src/main/deploy", e.g. "src/main/deploy/package/windows/project.ico"
+    additionalBundlerResources = null // path to some additional resources for the bundlers when creating application-bundle
+    additionalAppResources = null // path to some additional resources when creating application-bundle
+    secondaryLaunchers = null//[[appName:"somethingDifferent"], [appName:"somethingDifferent2"]]
+    fileAssociations = null // List<Map<String, Object>>
+    noBlobSigning = false // when using bundler "jnlp", you can choose to NOT use blob signing
+    customBundlers = null // List<String>
+    failOnError = false
+    onlyCustomBundlers = false
+    skipJNLP = false
+    skipNativeVersionNumberSanitizing = false // anything than numbers or dots are removed
+    additionalJarsignerParameters = null // List<String>
+    skipMainClassScanning = false // set to true might increase build-speed
+    
+    skipNativeLauncherWorkaround124 = false
+    skipNativeLauncherWorkaround167 = false
+    skipNativeLauncherWorkaround205 = false
+    skipJNLPRessourcePathWorkaround182 = false
+    skipSigningJarFilesJNLP185 = false
+    skipSizeRecalculationForJNLP185 = false
+    skipMacBundlerWorkaround = false
+    
+    // gradle jfxRun
+    runJavaParameter = null // String
+    runAppParameter = null // String
+
+    // per default the outcome of the gradle "jarTask" will be used, set this to specify otherwise (like proguard-output)
+    alternativePathToJarFile = null // String
+    
+    // to disable patching of ant-javafx.jar, set this to false
+    usePatchedJFXAntLib = true
+    
+    // making it able to support absolute paths, defaults to "false" for maintaining old behaviour
+    checkForAbsolutePaths = false
+    
+    // gradle jfxGenerateKeyStore
+    keyStore = "src/main/deploy/keystore.jks"
+    keyStoreAlias = "myalias"
+    keyStorePassword = "password"
+    keyPassword = null // will default to keyStorePassword
+    keyStoreType = "jks"
+    overwriteKeyStore = false
+    
+    certDomain = null // required
+    certOrgUnit = null // defaults to "none"
+    certOrg = null // required
+    certState = null // required
+    certCountry = null // required
+}
+
+/* Define task:jfxRunClass */
+task jfxRunClass(type: JavaExec) {
+    description 'Launches the JavaFX Application from the main class file'
+    println 'Launching JavaFX Application . . .'
+    main = "src.main.java.JavaFX9Demo"
+    classpath sourceSets.main.runtimeClasspath
+}
