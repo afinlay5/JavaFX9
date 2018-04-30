@@ -4,6 +4,9 @@ As of at least (04/27/2018), this article has reached ~10K people in 209 days ma
 
 ![alt text](https://raw.githubusercontent.com/afinlay5/JavaFX9/master/blog.png)
 
+# Platform 
+- Any supporting a JavaFX compatible JVM for Java SE 8+.
+
 # Requirements
 - Gradle 4.7 
 - Java 8 or greater.
